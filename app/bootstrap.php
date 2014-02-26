@@ -7,20 +7,34 @@
  * Every request starts and ends in this file.
  */
 
-# Super Primitive Router #
+define("PROJECT_ROOT", realpath(getcwd() . "/../"));
 
-$request_uri = explode("?", $_SERVER["REQUEST_URI"]);
-$request_uri = $request_uri[0];
-$request_uri = trim($request_uri, "/");
-$methodPath = $_SERVER["REQUEST_METHOD"] == "GET" ? "/pages/" : "/processing/";
+# Include FastRouter #
 
-$includePath = APP_ROOT . $methodPath . $request_uri;
-if (is_dir($includePath)) $includePath .= "index";
-$includePath .= ".php";
-if (file_exists($includePath)) {
-    require_once $includePath;
-}
-else {
-    header("HTTP/1.1 404 Not Found");
-    require_once APP_ROOT . "/pages/404.php";
+require_once PROJECT_ROOT . "lib/FastRouter/src/bootstrap.php";
+
+$dispatcher = FastRoute\simpleDispatcher(function(\FastRoute\RouteCollector $r) {
+    //@Todo: Add rules here. Some examples follow
+    $r->addRoute('GET', '/user/{name}/{id:[0-9]+}', 'handler0');
+    $r->addRoute('GET', '/user/{id:[0-9]+}', 'handler1');
+    $r->addRoute('GET', '/user/{name}', 'handler2');
+});
+
+$requestMethod = isset($_SERVER["REQUEST_METHOD"]) ? $_SERVER["REQUEST_METHOD"] : "GET";
+$uri = isset($_SERVER["REQUEST_URI"]) ? $_SERVER["REQUEST_URI"] : "/";
+
+$routeInfo = $dispatcher->dispatch($requestMethod, $uri);
+
+switch ($routeInfo[0]) {
+    case \FastRoute\Dispatcher::NOT_FOUND:
+        //@Todo: Implement 404 page!
+        break;
+    case \FastRoute\Dispatcher::METHOD_NOT_ALLOWED:
+        //@Todo: Implement 405 page!
+        break;
+    case \FastRoute\Dispatcher::FOUND:
+        $handler = $routeInfo[1];
+        $vars = $routeInfo[2];
+        //@Todo: Do stuff with $handler and $vars.
+    break;
 }
