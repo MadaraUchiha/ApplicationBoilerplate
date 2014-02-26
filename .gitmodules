@@ -1,0 +1,3 @@
+[submodule "lib/FastRouter"]
+	path = lib/FastRouter
+	url = git@github.com:nikic/FastRoute.git
