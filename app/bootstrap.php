@@ -11,7 +11,7 @@ define("PROJECT_ROOT", realpath(getcwd() . "/../"));
 
 # Include FastRouter #
 
-require_once PROJECT_ROOT . "lib/FastRouter/src/bootstrap.php";
+require_once PROJECT_ROOT . "/lib/FastRouter/src/bootstrap.php";
 
 $dispatcher = FastRoute\simpleDispatcher(function(\FastRoute\RouteCollector $r) {
     //@Todo: Add rules here. Some examples follow
